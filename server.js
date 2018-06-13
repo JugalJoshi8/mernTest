@@ -17,9 +17,9 @@ app.get('/', (req, res) => {
 
 
 //api routes
-app.use('api/users', users);
-app.use('api/posts', posts);
-app.use('api/profile', profile);
+app.use('/api/users', users);
+app.use('/api/posts', posts);
+app.use('/api/profile', profile);
 
 
 const port = process.env.PORT || 5000;
