@@ -7,6 +7,8 @@ const keys = require('./../../config/keys');
 
 const User = require('./../../models/User');
 const passport = require('passport');
+const userRegistrationValidator = require('./../../validations/registration');
+const userLoginValidator = require('./../../validations/login');
 
 //user api
 router.get('/test', (req, res) => {
@@ -14,6 +16,10 @@ router.get('/test', (req, res) => {
 })
 
 router.post('/register', (req, res) => {
+    const validations = userRegistrationValidator(req.body);
+    if(!validations.isValid) {
+        return res.status(400).json({errors: validations.errors});
+    }
     User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
             return res.status(400).json({ 'msg': 'email already exists' });
@@ -46,6 +52,12 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    //validaitons
+
+    const { errors, isValid } = userLoginValidator(req.body);
+    if(!isValid) {
+        return res.status(400).json({errors: errors});
+    }
     //find user by email
     User.findOne({ email: email }).then((user) => {
         if (!user) {
